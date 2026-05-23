@@ -1,0 +1,863 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSTN Engine 2026</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+<rect width='100' height='100' rx='20' fill='%23e61e32'/>
+<text x='50' y='64' font-size='56' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>C</text>
+</svg>">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Be Vietnam Pro',sans-serif;
+  background:#f3f5f9;
+  color:#1b1d29;
+}
+
+header{
+  background:#fff;
+  border-bottom:3px solid #e61e32;
+  padding:18px 28px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+}
+
+header h1{
+  color:#e61e32;
+  font-size:22px;
+  font-weight:800;
+}
+
+main{
+  max-width:1380px;
+  margin:24px auto;
+  padding:0 20px 60px;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:380px 1fr;
+  gap:20px;
+}
+
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:22px;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);border:1px solid #eef2f7;
+}
+
+.card-title{
+  font-size:15px;
+  font-weight:800;
+  margin-bottom:20px;
+}
+
+.field{
+  margin-bottom:18px;
+}
+
+.field label{
+  display:block;
+  margin-bottom:8px;
+  font-size:13px;
+  font-weight:700;
+  color:#555;
+}
+
+.field input,
+.field select{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid #d7dde8;
+  background:#f8fafc;
+  font-family:inherit;
+  font-size:14px;
+}
+
+.hint{
+  margin-top:6px;
+  font-size:11px;
+  color:#888;
+  line-height:1.5;
+}
+
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  margin-bottom:20px;
+}
+
+.summary:nth-child(1){
+  background:linear-gradient(135deg,#ff4b5c,#e61e32);
+}
+
+.summary:nth-child(2){
+  background:linear-gradient(135deg,#ff7b54,#b31225);
+}
+
+.summary:nth-child(3){
+  background:linear-gradient(135deg,#8b5cf6,#7e0d19);
+}
+
+.summary .label{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  opacity:.8;
+  margin-bottom:12px;
+  font-weight:700;
+}
+
+.summary{
+  padding:18px;
+  border-radius:16px;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+  min-width:0;
+}
+
+.summary .label{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  opacity:.8;
+  margin-bottom:10px;
+  font-weight:700;
+  line-height:1.4;
+}
+
+.summary .value{
+  font-size:28px;
+  font-weight:800;
+  line-height:1.1;
+  white-space:nowrap;
+}
+
+.summary .rate{
+  margin-top:8px;
+  font-size:11px;
+  opacity:.85;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+}
+
+.badge{
+  background:#f5f7fb;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+thead{
+  background:#f6f8fb;
+}
+
+th{
+  padding:14px 18px;
+  text-align:left;
+  font-size:11px;
+  color:#8b92a5;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+td{
+  padding:16px 18px;
+  border-top:1px solid #edf0f5;
+}
+
+th:not(:first-child),
+td:not(:first-child){
+  text-align:right;
+}
+
+.row-title{
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+.row-sub{
+  font-size:11px;
+  color:#888;
+}
+
+.total-bar{
+  margin-top:20px;
+  display:grid;
+  grid-template-columns:1fr;
+  overflow:hidden;
+  border-radius:16px;
+}
+
+.total-item{
+  background:#1b1d29;
+  color:#fff;
+  padding:22px;
+  text-align:center;
+}
+
+.total-item:last-child{
+  background:#e61e32;
+}
+
+.total-label{
+  font-size:11px;
+  text-transform:uppercase;
+  opacity:.7;
+  letter-spacing:1px;
+  margin-bottom:10px;
+}
+
+.total-value{
+  font-size:28px;
+  font-weight:800;
+}
+
+@media(max-width:580px){
+
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .summary-grid{
+    grid-template-columns:1fr;
+  }
+
+  .total-bar{
+    grid-template-columns:1fr;
+  }
+
+}
+
+
+input:focus,select:focus{
+outline:none;
+border-color:#e61e32;
+box-shadow:0 0 0 4px rgba(230,30,50,.12);
+transition:.2s;
+}
+
+button{
+transition:.2s;
+}
+
+button:hover{
+transform:translateY(-1px);
+opacity:.95;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>CSTN Engine 2026</h1>
+</header>
+
+<main>
+
+<div class="layout">
+
+  <aside class="card">
+
+    <div class="card-title">Thông số đầu vào</div>
+
+    <div class="field">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+
+        <label style="margin:0">Tuỳ chỉnh bảng mô phỏng</label>
+
+        <button
+          type="button"
+          id="toggleConfig"
+          style="
+            border:none;
+            background:#1b1d29;
+            color:white;
+            width:42px;
+            height:42px;
+            border-radius:12px;
+            cursor:pointer;
+            font-size:18px;
+          "
+        >
+          ⚙️
+        </button>
+
+      </div>
+
+      <div
+        id="configPanel"
+        style="
+          display:none;
+          padding:14px;
+          background:#f8fafc;
+          border:1px solid #d9dde6;
+          border-radius:12px;
+        "
+      >
+
+        <label style="display:block;margin-bottom:8px;font-size:12px;font-weight:700">
+          Tên bảng mô phỏng
+        </label>
+
+        <input
+          type="text"
+          id="customTitle"
+          value="CSTN Engine 2026"
+          style="margin-bottom:12px"
+        >
+
+        <button
+          type="button"
+          id="saveTitle"
+          style="
+            width:100%;
+            padding:10px;
+            border:none;
+            border-radius:10px;
+            background:#1ea95a;
+            color:white;
+            font-weight:700;
+            cursor:pointer;
+          "
+        >
+          Lưu thay đổi
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="field">
+      <label>TVV mới tốt nghiệp</label>
+
+      <div style="display:flex;gap:10px">
+        <button id="gradYes" type="button" style="flex:1;padding:12px;border:none;border-radius:10px;background:#1ea95a;color:white;font-weight:700;cursor:pointer">
+          YES
+        </button>
+
+        <button id="gradNo" type="button" style="flex:1;padding:12px;border:none;border-radius:10px;background:#d9dde6;color:#444;font-weight:700;cursor:pointer">
+          NO
+        </button>
+      </div>
+    </div>
+
+
+    <div class="field">
+      <label>📈 Doanh số Tháng T (Triệu)</label>
+      <input type="number" id="fypT" value="100">
+    </div>
+
+    <div class="field">
+      <label>📊 Doanh số Tháng T+1 (Triệu)</label>
+      <input type="number" id="fypT1" value="100">
+    </div>
+
+    <div class="field">
+      <label>💹 Doanh số Tháng T+2 (Triệu)</label>
+      <input type="number" id="fypT2" value="100">
+    </div>
+
+    <div class="field">
+      <label>🏆 Tổng FYP đã tích lũy được (Triệu)</label>
+      <input type="number" id="accumulatedFyp" value="0">
+    </div>
+
+    <div class="field">
+      <label>💰 Hoa hồng năm 1 - FYC (%)</label>
+      <input type="number" id="fycRate" value="23">
+      <div class="hint">
+        Điều chỉnh tỷ lệ FYC linh hoạt theo campaign / policy thực tế.
+      </div>
+    </div>
+
+    <div class="field">
+      <label>TTDTPTT (K2) (%)</label>
+      <input type="number" id="k2" value="80">
+    </div>
+
+    <div class="field">
+      <label>🎁 % Khoản thưởng sẽ nhận</label>
+      <input type="text" id="rewardPercent" readonly value="100%">
+    </div>
+
+    <div class="field">
+      <label>👑 Danh hiệu PruElite</label>
+
+      <select id="pe">
+        <option value="none">Chưa đạt</option>
+        <option value="gold">PE Vàng</option>
+        <option value="platinum">PE Bạch Kim</option>
+        <option value="diamond">PE Kim Cương</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>🚀 🚀 Thi đua ngắn hạn (%)</label>
+      <input type="number" id="campaign" value="10">
+    </div>
+
+  </aside>
+
+  <section>
+
+    <div class="summary-grid">
+
+      <div class="summary">
+        <div class="label">Thu nhập Tháng T</div>
+        <div class="value" id="sumT">0 Tr</div>
+        <div class="rate" id="rateT">0%</div>
+      </div>
+
+      <div class="summary">
+        <div class="label">Thu nhập Tháng T+1</div>
+        <div class="value" id="sumT1">0 Tr</div>
+        <div class="rate" id="rateT1">0%</div>
+      </div>
+
+      <div class="summary">
+        <div class="label">Thu nhập Tháng T+2</div>
+        <div class="value" id="sumT2">0 Tr</div>
+        <div class="rate" id="rateT2">0%</div>
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <div class="topbar">
+        <div class="card-title" style="margin:0">
+          Chi tiết thu nhập theo quý
+        </div>
+
+        <div class="badge" id="k2Badge">
+          K2: 80%
+        </div>
+      </div>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Khoản thu nhập</th>
+            <th>Tháng T</th>
+            <th>Tháng T+1</th>
+            <th>Tháng T+2</th>
+          </tr>
+        </thead>
+
+        <tbody id="tableBody"></tbody>
+
+      </table>
+
+      <div class="total-bar">
+
+        <div class="total-item" style="background:#f0b400">
+          <div class="total-label">Tổng Thu Nhập Quý</div>
+          <div class="total-value" id="quarterTotal">0 Tr</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<div style="
+margin-top:24px;
+padding:18px 22px;
+background:#fff8e8;
+border:1px solid #ffe2a8;
+border-radius:14px;
+font-size:13px;
+line-height:1.7;
+color:#8a5b00;
+">
+<strong>⚠️ Lưu ý:</strong> Các con số trên chỉ mang tính chất minh hoạ và tham khảo.
+Kết quả thực tế dựa trên chính sách chi trả của Công ty.
+</div>
+
+</main>
+
+<script>
+
+
+let graduateEligible = true;
+
+document.addEventListener('DOMContentLoaded',()=>{
+
+  const yesBtn = document.getElementById('gradYes');
+  const noBtn = document.getElementById('gradNo');
+
+  yesBtn.onclick = () => {
+    graduateEligible = true;
+    yesBtn.style.background = '#1ea95a';
+    yesBtn.style.color = 'white';
+    noBtn.style.background = '#d9dde6';
+    noBtn.style.color = '#444';
+    calculate();
+  };
+
+  noBtn.onclick = () => {
+    graduateEligible = false;
+    noBtn.style.background = '#e61e32';
+    noBtn.style.color = 'white';
+    yesBtn.style.background = '#d9dde6';
+    yesBtn.style.color = '#444';
+    calculate();
+  };
+
+});
+
+
+const policy = {
+
+  sycRate:0.125,
+  tycRate:0.10,
+  rycRate:0.05,
+
+  peRates:{
+    none:{quarter:0,year:0},
+    gold:{quarter:0.15,year:0.10},
+    platinum:{quarter:0.18,year:0.15},
+    diamond:{quarter:0.20,year:0.20}
+  },
+
+  activityBonus:[
+    {min:0,rate:0},
+    {min:10,rate:0.15},
+    {min:20,rate:0.20},
+    {min:40,rate:0.35},
+    {min:75,rate:0.50},
+    {min:130,rate:0.70}
+  ]
+
+};
+
+const fmt = n => {
+  return (Math.round(n * 10) / 10).toLocaleString('vi-VN',{
+    minimumFractionDigits:1,
+    maximumFractionDigits:1
+  }) + ' Tr';
+};
+
+function getActivityRate(fyc){
+
+  let rate = 0;
+
+  policy.activityBonus.forEach(item=>{
+    if(fyc >= item.min){
+      rate = item.rate;
+    }
+  });
+
+  return rate;
+}
+
+function calcMonth(fyp, fycRate, campaignRate, k2){
+
+  const fyc = fyp * fycRate;
+  const syc = fyp * policy.sycRate;
+  const tyc = fyp * policy.tycRate;
+  const ryc = fyp * policy.rycRate;
+
+  const rewardPercent = getRewardPercent(k2);
+
+  document.getElementById('rewardPercent').value =
+    Math.round(rewardPercent * 100) + '%';
+
+  const activityRate =
+    k2 >= 80
+      ? getActivityRate(fyc)
+      : 0;
+
+  const campaignBonus = fyp * campaignRate;
+
+  return {
+    fyc,
+    syc,
+    tyc,
+    ryc,
+    activityRate,
+    campaignBonus
+  };
+}
+
+
+
+function getRewardPercent(k2){
+
+  if(k2 < 65) return 0;
+  if(k2 >= 65 && k2 <= 69) return 0.6;
+  if(k2 >= 70 && k2 <= 79) return 0.8;
+  if(k2 >= 80 && k2 <= 89) return 1.0;
+
+  return 1.1;
+}
+
+
+function calcAdvisorBonus(fyc){
+  if(fyc >= 10) return 2;
+  if(fyc > 5 && fyc < 10) return 1;
+  return 0;
+}
+
+function calculate(){
+
+  const title = document.getElementById('customTitle').value;
+  document.querySelector('header h1').textContent = title;
+  document.title = title;
+
+  
+
+  const fypT = Number(document.getElementById('fypT').value);
+  const fypT1 = Number(document.getElementById('fypT1').value);
+  const fypT2 = Number(document.getElementById('fypT2').value);
+
+  const accumulatedFyp =
+    Number(document.getElementById('accumulatedFyp').value);
+
+  const fycRate =
+    Number(document.getElementById('fycRate').value) / 100;
+
+  const k2 =
+    Number(document.getElementById('k2').value);
+
+  const pe =
+    document.getElementById('pe').value;
+
+  const campaignRate =
+    Number(document.getElementById('campaign').value) / 100;
+
+  const mT = calcMonth(fypT,fycRate,campaignRate,k2);
+  const mT1 = calcMonth(fypT1,fycRate,campaignRate,k2);
+  const mT2 = calcMonth(fypT2,fycRate,campaignRate,k2);
+
+  const advisorT = graduateEligible ? calcAdvisorBonus(mT.fyc) : 0;
+  const advisorT1 = graduateEligible ? calcAdvisorBonus(mT1.fyc) : 0;
+  const advisorT2 = graduateEligible ? calcAdvisorBonus(mT2.fyc) : 0;
+
+  const quarterFyc =
+    mT.fyc + mT1.fyc + mT2.fyc;
+
+  const quarterSales =
+    fypT + fypT1 + fypT2;
+
+  const totalAccumulated =
+    accumulatedFyp + quarterSales;
+
+  let mdrtBonus = 0;
+
+  if(totalAccumulated > 1074){
+    mdrtBonus = 50;
+  }
+  else if(totalAccumulated > 750){
+    mdrtBonus = 25;
+  }
+  else if(totalAccumulated > 500){
+    mdrtBonus = 10;
+  }
+
+  const activityBonusQuarter =
+    quarterFyc *
+    getActivityRate(quarterFyc) * getRewardPercent(k2);
+
+  const peQuarterBonus =
+    quarterFyc *
+    policy.peRates[pe].quarter * getRewardPercent(k2);
+
+  const incomeT =
+    mT.fyc +
+    
+    mT.campaignBonus + advisorT;
+
+  const incomeT1 =
+    mT1.fyc +
+    
+    mT1.campaignBonus + advisorT1;
+
+  const incomeT2 =
+    mT2.fyc +
+    
+    mT2.campaignBonus + advisorT2 +
+    activityBonusQuarter +
+    peQuarterBonus +
+    mdrtBonus;
+
+  document.getElementById('sumT').textContent = fmt(incomeT);
+  document.getElementById('sumT1').textContent = fmt(incomeT1);
+  document.getElementById('sumT2').textContent = fmt(incomeT2);
+
+  document.getElementById('rateT').textContent =
+    'Tỷ suất: ' + ((incomeT / fypT) * 100).toFixed(1) + '%';
+
+  document.getElementById('rateT1').textContent =
+    'Tỷ suất: ' + ((incomeT1 / fypT1) * 100).toFixed(1) + '%';
+
+  document.getElementById('rateT2').textContent =
+    'Tỷ suất: ' + ((incomeT2 / fypT2) * 100).toFixed(1) + '%';
+
+  document.getElementById('k2Badge').textContent =
+    'K2: ' + k2 + '%';
+
+  const rows = [
+
+    {
+      name:'💰 Hoa hồng năm 1 (FYC)',
+      sub:(fycRate * 100).toFixed(0) + '% × FYP',
+      t:mT.fyc,
+      t1:mT1.fyc,
+      t2:mT2.fyc
+    },
+
+    
+    
+    
+    {
+      name:'🚀 Thi đua ngắn hạn',
+      sub:(campaignRate * 100).toFixed(0) + '% × FYP',
+      t:mT.campaignBonus,
+      t1:mT1.campaignBonus,
+      t2:mT2.campaignBonus
+    },
+
+    {
+      name:'👨‍💼 Phát triển TVV mới',
+      sub:'FYC > 5 & < 10 = 1 Tr | FYC ≥ 10 = 2 Tr',
+      t:advisorT,
+      t1:advisorT1,
+      t2:advisorT2
+    },
+
+    {
+      name:'🎯 Thưởng Quý',
+      sub:(getActivityRate(quarterFyc) * 100).toFixed(0) + '% × Tổng FYC quý × ' + Math.round(getRewardPercent(k2) * 100) + '%',
+      t:null,
+      t1:null,
+      t2:activityBonusQuarter
+    },
+
+    {
+      name:'🏅 Khoản thưởng MDRT 2027 Ontrack',
+      sub:'>500 = 10 Tr | >750 = 25 Tr | >1074 = 50 Tr',
+      t:null,
+      t1:null,
+      t2:mdrtBonus
+    },
+
+    {
+      name:'👑 PruElite Quý',
+      sub:(policy.peRates[pe].quarter * 100).toFixed(0) + '% × FYC quý × ' + Math.round(getRewardPercent(k2) * 100) + '%',
+      t:null,
+      t1:null,
+      t2:peQuarterBonus
+    }
+
+  ];
+
+  const dash = '<span style="color:#bbb">—</span>';
+
+  document.getElementById('tableBody').innerHTML =
+    rows.map(row=>`
+
+      <tr>
+
+        <td>
+          <div class="row-title">${row.name}</div>
+          <div class="row-sub">${row.sub}</div>
+        </td>
+
+        <td>${row.t !== null ? fmt(row.t) : dash}</td>
+        <td>${row.t1 !== null ? fmt(row.t1) : dash}</td>
+        <td>${row.t2 !== null ? fmt(row.t2) : dash}</td>
+
+      </tr>
+
+    `).join('');
+
+  const quarterTotal = incomeT + incomeT1 + incomeT2;
+  document.getElementById('quarterTotal').textContent = fmt(quarterTotal);
+}
+
+
+document.addEventListener('DOMContentLoaded',()=>{
+
+  const toggleBtn = document.getElementById('toggleConfig');
+  const panel = document.getElementById('configPanel');
+
+  toggleBtn.onclick = () => {
+
+    panel.style.display =
+      panel.style.display === 'none'
+        ? 'block'
+        : 'none';
+
+  };
+
+  document.getElementById('saveTitle').onclick = () => {
+
+    const title =
+      document.getElementById('customTitle').value;
+
+    document.querySelector('header h1').textContent = title;
+    document.title = title;
+
+    panel.style.display = 'none';
+
+  };
+
+});
+
+
+document.querySelectorAll('input,select').forEach(el=>{
+  el.addEventListener('input',calculate);
+});
+
+calculate();
+
+</script>
+
+</body>
+</html>
